@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'djoser',
     'corsheaders',
 
+    'chat',
+
 ]
 
 
