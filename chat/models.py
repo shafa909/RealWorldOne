@@ -1,19 +1,20 @@
 from django.db import models
 
-from uuid import uuid4
 from django.contrib.auth import get_user_model
 
 
 User = get_user_model()
 
+class Message(models.Model):
+    auther = models.ForeignKey(User,related_name='auther_message', on_delete= models.CASCADE)
+    content = models.TextField()
+    timeStamp = models.DateTimeField(auto_now_add= True) 
 
+    def __str__(self):
+        return auther.username
 
-def deserialize_user(user):
-    """Deserialize user instance to JSON."""
-    return {
-        'id': user.id, 'username': user.username, 'email': user.email,
-        'first_name': user.first_name, 'last_name': user.last_name
-    }
+    def last_10_Msg(self):
+        return Message.objects.order_by('-timestamp').all()[:10]    
 
 
 
