@@ -1,8 +1,12 @@
+
+
+from django.contrib import admin
 from django.urls import path
 
-from . import views
+from . import api
 
 urlpatterns = [
-    path('', views.index, name='index'),
-    path('<str:room_name>/', views.room, name='room')
-]  
+    path('chats/', api.ChatSessionView.as_view()),
+    path('chats/<uri>/', api.ChatSessionView.as_view()),
+    path('chats/<uri>/messages/', api.ChatSessionMessageView.as_view()),
+]
