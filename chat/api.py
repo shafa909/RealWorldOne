@@ -19,7 +19,11 @@ class ChatSessionView(APIView):
 
     def post(self, request, *args, **kwargs):
         """create a new chat session."""
+        
+        print("yes am running")  
         user = request.user
+        
+        print("yes am running")    
 
         chat_session = ChatSession.objects.create(owner=user)
 

@@ -1,9 +1,8 @@
 
-
 from django.contrib import admin
 from django.urls import path
 
-from . import api
+from . import api 
 
 urlpatterns = [
     path('chats/', api.ChatSessionView.as_view()),
