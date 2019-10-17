@@ -1,5 +1,6 @@
-"""Views for the chat app."""
+"""API Views  for the chat app."""
 
+from django.http import Http404
 from django.contrib.auth import get_user_model
 
 from .models import (
@@ -9,21 +10,17 @@ from .models import (
 from rest_framework import permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
-
-
+from notifications.signals import notify
 
 
 class ChatSessionView(APIView):
+    """Manage Chat sessions."""
 
     permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request, *args, **kwargs):
         """create a new chat session."""
-        
-        print("yes am running")  
         user = request.user
-        
-        print("yes am running")    
 
         chat_session = ChatSession.objects.create(owner=user)
 
@@ -54,14 +51,17 @@ class ChatSessionView(APIView):
             for chat_session in chat_session.members.all()
         ]
         members.insert(0, owner)  # Make the owner the first member
-        return Response({
+
+        return Response ({
             'status': 'SUCCESS', 'members': members,
             'message': '%s joined that chat' % user.username,
             'user': deserialize_user(user)
         })
-
+    
 
 class ChatSessionMessageView(APIView):
+    """Create/Get Chat session messages."""
+
     permission_classes = (permissions.IsAuthenticated,)
 
     def get(self, request, *args, **kwargs):
@@ -89,9 +89,27 @@ class ChatSessionMessageView(APIView):
             user=user, chat_session=chat_session, message=message
         )
 
+        notif_args = {
+            'source': user,
+            'source_display_name': user.get_full_name(),
+            'category': 'chat', 'action': 'Sent',
+            'obj': chat_session_message.id,
+            'short_description': 'You a new message', 'silent': True,
+            'extra_data': {
+                'uri': chat_session.uri,
+                'message': chat_session_message.to_json()
+            }
+        }
+        notify.send(
+            sender=self.__class__,**notif_args, channels=['websocket']
+        )
+
         return Response ({
             'status': 'SUCCESS', 'uri': chat_session.uri, 'message': message,
             'user': deserialize_user(user)
         })
 
 
+def raise_404(request):
+    """Raise a 404 Error."""
+    raise Http404

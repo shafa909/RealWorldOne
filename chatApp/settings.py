@@ -11,7 +11,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'nzezesm)ihe$l!uzy&35!pow^f6!1_nm7$jmb(01kb%_02jt98'
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -28,15 +28,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'chat',
-
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
     'djoser',
 
-
-    ]
+    'chat',
+    'notifications'
+]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -134,4 +133,14 @@ REST_FRAMEWORK = {
 
 CORS_ORIGIN_ALLOW_ALL = True
 
+# Celery settings
+CELERY_TASK_ALWAYS_EAGER = True
 
+# notifications settings
+NOTIFICATIONS_CHANNELS = {
+    'websocket': 'chat.channels.BroadCastWebSocketChannel'
+}
+
+# djangorestframework-jwt settings
+JWT_ALLOW_REFRESH = True
+JWT_EXPIRATION_DELTA = timedelta(minutes=30)
