@@ -5,7 +5,7 @@
 
         <div v-if="!loading && sessionStarted" id="chat-container" class="card">
           <div class="card-header text-white text-center font-weight-bold subtle-blue-gradient">
-            This is Chat Screen
+            Share Your Link and Make Join Your Friends
           </div>
 
           <div class="card-body">
@@ -53,7 +53,7 @@
           <h3 class="text-center">Welcome {{ username }}!</h3>
           <br />
           <p class="text-center">
-            To start chatting with friends click on the button below, And share the link after chat screen loaded!
+            To start chatting with friends click on the button below, or already Your Friend Started, Join with him by following his Link
           </p>
           <br />
           <button @click="startChatSession" class="btn btn-primary btn-lg btn-block">Start Chatting</button>
@@ -72,14 +72,12 @@
 <script>
 
 const $ = window.jQuery
-
 export default {
   data () {
     return {
       loading: true,
       messages: [],
       message: '',
-      notification: new Audio('../../static/plucky.ogg'),
       sessionStarted: false
     }
   },
@@ -128,7 +126,6 @@ export default {
 
     postMessage (event) {
       const data = {message: this.message}
-
       $.post(`http://localhost:8000/api/chats/${this.$route.params.uri}/messages/`, data, (data) => {
         this.message = '' // clear the message after sending
       })
@@ -164,7 +161,7 @@ export default {
     },
 
     connectToWebSocket () {
-      const websocket = new WebSocket(`ws://localhost:8087/${this.$route.params.uri}`)
+      const websocket = new WebSocket(`ws://localhost:8082/${this.$route.params.uri}`)
       websocket.onopen = this.onOpen
       websocket.onclose = this.onClose
       websocket.onmessage = this.onMessage
@@ -185,10 +182,6 @@ export default {
     onMessage (event) {
       const message = JSON.parse(event.data)
       this.messages.push(message)
-
-      if (!document.hasFocus()) {
-        this.notification.play()
-      }
     },
 
     onError (event) {

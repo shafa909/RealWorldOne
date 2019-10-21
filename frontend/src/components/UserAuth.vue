@@ -1,6 +1,5 @@
 <template>
   <div class="container">
-    <h1 class="text-center">Welcome to Chatire!</h1>
     <div id="auth-container" class="row">
       <div class="col-sm-4 offset-sm-4">
         <ul class="nav nav-tabs nav-justified" id="myTab" role="tablist">
@@ -42,6 +41,7 @@
               <button type="submit" class="btn btn-block btn-primary">Sign in</button>
             </form>
           </div>
+          
         </div>
       </div>
     </div>
@@ -49,43 +49,53 @@
 </template>
 
 <script>
-const $ = window.jQuery // JQuery
-export default {
-  data () {
-    return {
-      email: '', username: '', password: ''
-    }
-  },
-  methods: {
-    signUp () {
-      $.post('http://localhost:8000/auth/users/create/', this.$data, (data) => {
-        alert('Your account has been created. You will be signed in automatically')
-        this.signIn()
-      })
-        .fail((response) => {
-          alert(response.responseText)
-        })
+  const $ = window.jQuery // JQuery
+
+  export default {
+
+    data () {
+      return {
+        email: '', username: '', password: ''
+      }
     },
-    signIn () {
-      const credentials = {username: this.username, password: this.password}
-      $.post('http://localhost:8000/auth/jwt/create/', credentials, (data) => {
-        sessionStorage.setItem('authToken', data.token)
-        sessionStorage.setItem('username', this.username)
-        this.$router.push('/chats')
-      })
+
+    methods: {
+      signUp () {
+        $.post('http://localhost:8000/auth/users/create/', this.$data, (data) => {
+          alert('Your account has been created. You will be signed in automatically')
+          this.signIn()
+        })
         .fail((response) => {
           alert(response.responseText)
         })
+      },
+
+      signIn () {
+        const credentials = {username: this.username, password: this.password}
+
+        $.post('http://localhost:8000/auth/jwt/create/', credentials, (data) => {
+          sessionStorage.setItem('authToken', data.token)
+          sessionStorage.setItem('username', this.username)
+          this.$router.push('/chats')
+        })
+        .fail((response) => {
+          alert(response.responseText)
+        })
+      }
     }
+
   }
-}
 </script>
 
 <style scoped>
+
   #auth-container {
     margin-top: 50px;
   }
+
   .tab-content {
     padding-top: 20px;
   }
+
+
 </style>
