@@ -4,8 +4,6 @@
 
 ### Django
 
-To get the Django server running:
-
 Install the requirements from pip
 
 ```bash
