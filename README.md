@@ -35,7 +35,7 @@ uwsgi --http :8081 --gevent 100 --module websocket --gevent-monkey-patch --maste
 
 ### Vue
 
-Navigate to the `chatire-frontend directory`:
+Navigate to the `frontend directory`:
 
 ```bash
 cd frontend
